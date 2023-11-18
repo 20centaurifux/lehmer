@@ -1,0 +1,12 @@
+(defproject lehmer "0.1.0-SNAPSHOT"
+  :description "Encode permutations to numbers and vice versa."
+  :url "https://github.com/20centaurifux/lehmer"
+  :license {:name "AGPLv3"
+            :url "https://www.gnu.org/licenses/agpl-3.0"}
+  :dependencies [[org.clojure/clojure "1.11.1"]
+                 [org.clojure/test.check "1.1.1"]
+                 [org.clojure/core.match "1.0.1"]]
+  :main ^:skip-aot lehmer.core
+  :target-path "target/%s"
+  :profiles {:uberjar {:aot :all
+                       :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}})
