@@ -22,14 +22,21 @@
   [coll indeces]
   (map #(nth coll %) indeces))
 
+(defn- nth-collection
+  [n elements]
+  (->> (elements->indeces elements)
+       (permutate-indeces (dec n))
+       (nthx elements)
+       (into (empty elements))))
+
 (defn nth-permutation
   "Returns n-th permutation of elements or nil if n is greater than number of
    permutations. elements must be a distinct list, vector or string."
   [n elements]
   {:pre [(s/valid? :lehmer.specs/index n)
          (s/valid? :lehmer.specs/elements elements)]
-   :post [#(s/valid? :lehmer.specs/permutation %)]}
+   :post [#(s/valid? :lehmer.specs/permutation %)
+          #(= (type %) (type elements))]}
   (when (<= n (factorial (count elements)))
-    (->> (elements->indeces elements)
-         (permutate-indeces (dec n))
-         (nthx elements))))
+    (cond->> (nth-collection n elements)
+      (string? elements) (apply str))))

@@ -15,10 +15,7 @@
 
 (defn- run-generative-tests
   ([f spec]
-   (run-generative-tests
-    f
-    spec
-    {::stc/opts {:num-tests 1000}}))
+   (run-generative-tests f spec {::stc/opts {:num-tests 1000}}))
   ([f spec opts]
    (let [results (check-fn
                   (fn [& args]
@@ -31,10 +28,7 @@
 
 (s/def ::valid-index :lehmer.specs/index)
 
-(s/def ::valid-elements
-  (s/with-gen
-    :lehmer.specs/elements
-    #(gen/list-distinct (s/gen :lehmer.specs/element))))
+(s/def ::valid-elements :lehmer.specs/elements)
 
 (s/def ::invalid-index
   (s/with-gen
