@@ -104,3 +104,21 @@
      (s/fspec :args (s/cat :permutation ::valid-permutation
                            :elements ::valid-elements)
               :ret ::assertion-error))))
+
+(s/def ::invalid-lehmer-code
+  (s/with-gen
+    (complement #(s/valid? :lehmer.specs/lehmer-code %))
+    #(gen/such-that (partial s/valid? ::invalid-lehmer-code) gen/any)))
+
+(deftest lehmer-code->base-10
+  (testing "valid argument"
+    (run-generative-tests
+     lehmer/lehmer-code->base-10
+     (s/fspec :args (s/cat :lehmer-code :lehmer.specs/lehmer-code)
+              :ret :lehmer.specs/natural-integral)))
+
+  (testing "invalid argument"
+    (run-generative-tests
+     lehmer/lehmer-code->base-10
+     (s/fspec :args (s/cat :lehmer-code ::invalid-lehmer-code)
+              :ret ::assertion-error))))

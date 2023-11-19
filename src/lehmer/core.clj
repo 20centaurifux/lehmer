@@ -65,3 +65,12 @@
          (= (set permutation) (set elements))]
    :post [(s/valid? :lehmer.specs/lehmer-code %)]}
   (lehmer-code [] (permutation->indeces permutation elements)))
+
+(defn lehmer-code->base-10
+  "Converts lehmer-code to base 10."
+  [lehmer-code]
+  {:pre [(s/valid? :lehmer.specs/lehmer-code lehmer-code)]
+   :post [(s/valid? :lehmer.specs/natural-integral %)]}
+  (reduce + 1 (map-indexed (fn [idx n]
+                             (* (factorial (- (count lehmer-code) idx 1)) n))
+                           lehmer-code)))

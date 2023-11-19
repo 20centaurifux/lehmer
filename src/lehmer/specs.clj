@@ -29,4 +29,11 @@
 
 (s/def ::permutation ::elements)
 
-(s/def ::lehmer-code (s/coll-of int?))
+(s/def ::lehmer-code (s/coll-of nat-int?))
+
+(defn- bigint?
+  [n]
+  (instance? clojure.lang.BigInt n))
+
+(s/def ::natural-integral (s/or :int (s/and int? nat-int?)
+                                :bigint (s/and bigint? #(>= % 0))))
