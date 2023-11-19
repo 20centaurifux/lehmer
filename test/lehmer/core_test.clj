@@ -122,3 +122,21 @@
      lehmer/lehmer-code->base-10
      (s/fspec :args (s/cat :lehmer-code ::invalid-lehmer-code)
               :ret ::assertion-error))))
+
+(s/def ::valid-permutation-index (s/int-in 1 sample-elements-count))
+
+(defn- nth-permutation->lehmer-code->base10
+  [index elements]
+  (-> (lehmer/nth-permutation index elements)
+      (lehmer/permutation->lehmer-code elements)
+      lehmer/lehmer-code->base-10))
+
+(deftest all
+  (testing "nth-permutation->lehmer-code->base10"
+    (run-generative-tests
+     nth-permutation->lehmer-code->base10
+     (s/fspec :args (s/cat :index ::valid-permutation-index :elements ::valid-permutation)
+              :ret :lehmer.specs/natural-integral
+              :fn #(match [%]
+                     [{:args {:index index :elements _}
+                       :ret [_ n]}] (= index n))))))
