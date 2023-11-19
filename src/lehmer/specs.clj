@@ -28,3 +28,5 @@
                         :coll ::elements-coll))
 
 (s/def ::permutation ::elements)
+
+(s/def ::lehmer-code (s/coll-of int?))

@@ -62,9 +62,45 @@
                            :elements ::valid-elements)
               :ret ::assertion-error)))
 
-  (testing "invalid index argument"
+  (testing "invalid elements argument"
     (run-generative-tests
      lehmer/nth-permutation
      (s/fspec :args (s/cat :n ::valid-index
                            :elements ::invalid-elements)
+              :ret ::assertion-error))))
+
+(def ^:private sample-elements-count 20)
+
+(s/def ::valid-permutation
+  (s/with-gen
+    #(= (set (range sample-elements-count)) (set %))
+    #(gen/shuffle (range sample-elements-count))))
+
+(deftest permutation->lehmer-code
+  (testing "valid arguments"
+    (run-generative-tests
+     lehmer/permutation->lehmer-code
+     (s/fspec :args (s/cat :permutation ::valid-permutation
+                           :elements ::valid-permutation)
+              :ret :lehmer.specs/lehmer-code)))
+
+  (testing "invalid permutation argument"
+    (run-generative-tests
+     lehmer/permutation->lehmer-code
+     (s/fspec :args (s/cat :permutation ::invalid-elements
+                           :elements ::valid-permutation)
+              :ret ::assertion-error)))
+
+  (testing "invalid elements argument"
+    (run-generative-tests
+     lehmer/permutation->lehmer-code
+     (s/fspec :args (s/cat :permutation ::valid-permutation
+                           :elements ::invalid-elements)
+              :ret ::assertion-error)))
+
+  (testing "permutation isn't rearrangement of elements"
+    (run-generative-tests
+     lehmer/permutation->lehmer-code
+     (s/fspec :args (s/cat :permutation ::valid-permutation
+                           :elements ::valid-elements)
               :ret ::assertion-error))))
