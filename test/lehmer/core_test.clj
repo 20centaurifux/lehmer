@@ -47,7 +47,7 @@
      (s/fspec :args (s/cat :n ::valid-index
                            :elements ::valid-elements)
               :ret (s/or :nil nil?
-                         :permutation :lehmer.specs/permutation)
+                         :permutation :lehmer.specs/elements)
               :fn #(match [%]
                      [{:args {:n n :elements [_ elements]}
                        :ret [:nil _]}] (or (<= n 0)
@@ -115,7 +115,7 @@
     (run-generative-tests
      lehmer/lehmer-code->base-10
      (s/fspec :args (s/cat :lehmer-code :lehmer.specs/lehmer-code)
-              :ret :lehmer.specs/natural-integral)))
+              :ret :lehmer.specs/natural-integer)))
 
   (testing "invalid argument"
     (run-generative-tests
@@ -136,7 +136,7 @@
     (run-generative-tests
      nth-permutation->lehmer-code->base10
      (s/fspec :args (s/cat :index ::valid-permutation-index :elements ::valid-permutation)
-              :ret :lehmer.specs/natural-integral
+              :ret :lehmer.specs/natural-integer
               :fn #(match [%]
                      [{:args {:index index :elements _}
-                       :ret [_ n]}] (= index n))))))
+                       :ret n}] (= index n))))))

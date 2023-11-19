@@ -37,7 +37,7 @@
   {:pre [(s/valid? :lehmer.specs/index n)
          (s/valid? :lehmer.specs/elements elements)]
    :post [(or (nil? %)
-              (and (s/valid? :lehmer.specs/permutation %)
+              (and (s/valid? :lehmer.specs/elements %)
                    (= (type elements) (type %))))]}
   (when (<= n (factorial (count elements)))
     (cond->> (nth-collection n elements)
@@ -60,7 +60,7 @@
   "Returns lehmer code of permutation, where permutation is a rearrangement of
    elements. elements must be a distinct list, vector or string."
   [permutation elements]
-  {:pre [(s/valid? :lehmer.specs/permutation permutation)
+  {:pre [(s/valid? :lehmer.specs/elements permutation)
          (s/valid? :lehmer.specs/elements elements)
          (= (set permutation) (set elements))]
    :post [(s/valid? :lehmer.specs/lehmer-code %)]}
@@ -70,7 +70,7 @@
   "Converts lehmer-code to base 10."
   [lehmer-code]
   {:pre [(s/valid? :lehmer.specs/lehmer-code lehmer-code)]
-   :post [(s/valid? :lehmer.specs/natural-integral %)]}
+   :post [(s/valid? :lehmer.specs/natural-integer %)]}
   (reduce + 1 (map-indexed (fn [idx n]
                              (* (factorial (- (count lehmer-code) idx 1)) n))
                            lehmer-code)))

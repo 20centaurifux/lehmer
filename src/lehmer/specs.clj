@@ -9,31 +9,26 @@
                        :boolean boolean?
                        :character char?))
 
-(defonce ^:private distinct-generator-opts {:min-elements 1})
+(def ^:private distinct-gen-opts {:min-elements 1})
 
 (s/def ::elements-string (s/with-gen (s/and string?
                                             not-empty
                                             #(apply distinct? %))
-                           #(gen/fmap (fn [coll] (apply str coll))
-                                      (gen/list-distinct gen/char-alpha distinct-generator-opts))))
+                           #(gen/fmap (partial apply str)
+                                      (gen/list-distinct gen/char-alpha distinct-gen-opts))))
+
+(def ^:private element-generator (s/gen :lehmer.specs/element))
 
 (s/def ::elements-coll (s/with-gen (s/and (s/coll-of ::element
                                                      :distinct true
                                                      :kind #(or (vector? %) (list? %)))
                                           not-empty)
-                         #(gen/one-of [(gen/list-distinct (s/gen :lehmer.specs/element) distinct-generator-opts)
-                                       (gen/vector-distinct (s/gen :lehmer.specs/element) distinct-generator-opts)])))
+                         #(gen/one-of [(gen/list-distinct element-generator distinct-gen-opts)
+                                       (gen/vector-distinct element-generator distinct-gen-opts)])))
 
 (s/def ::elements (s/or :string ::elements-string
                         :coll ::elements-coll))
 
-(s/def ::permutation ::elements)
-
 (s/def ::lehmer-code (s/coll-of nat-int?))
 
-(defn- bigint?
-  [n]
-  (instance? clojure.lang.BigInt n))
-
-(s/def ::natural-integral (s/or :int (s/and int? nat-int?)
-                                :bigint (s/and bigint? #(>= % 0))))
+(s/def ::natural-integer (s/and integer? #(>= % 0))) ; clojure.core/nat-int? returns false for bigints
