@@ -1,6 +1,6 @@
 (ns lehmer.core
-  (:require [clojure.spec.alpha :as s])
-  (:use [lehmer.specs]))
+  (:require [clojure.spec.alpha :as s]
+            [lehmer.specs :as specs]))
 
 (def ^:private factorial (memoize #(reduce * % (range 1N %))))
 
@@ -23,7 +23,7 @@
   [coll indeces]
   (map #(nth coll %) indeces))
 
-(defn- nth-collection
+(defn- nth-elements
   [n elements]
   (->> (elements->indeces elements)
        (permutate-indeces (dec n))
@@ -34,13 +34,13 @@
   "Returns n-th permutation of elements or nil if n is greater than number of
    permutations. elements must be a distinct list, vector or string."
   [n elements]
-  {:pre [(s/valid? :lehmer.specs/index n)
-         (s/valid? :lehmer.specs/elements elements)]
+  {:pre [(s/valid? ::specs/index n)
+         (s/valid? ::specs/elements elements)]
    :post [(or (nil? %)
-              (and (s/valid? :lehmer.specs/elements %)
+              (and (s/valid? ::specs/elements %)
                    (= (type elements) (type %))))]}
   (when (<= n (factorial (count elements)))
-    (cond->> (nth-collection n elements)
+    (cond->> (nth-elements n elements)
       (string? elements) (apply str))))
 
 (defn- permutation->indeces
@@ -60,17 +60,17 @@
   "Returns lehmer code of permutation, where permutation is a rearrangement of
    elements. elements must be a distinct list, vector or string."
   [permutation elements]
-  {:pre [(s/valid? :lehmer.specs/elements permutation)
-         (s/valid? :lehmer.specs/elements elements)
+  {:pre [(s/valid? ::specs/elements permutation)
+         (s/valid? ::specs/elements elements)
          (= (set permutation) (set elements))]
-   :post [(s/valid? :lehmer.specs/lehmer-code %)]}
+   :post [(s/valid? ::specs/lehmer-code %)]}
   (lehmer-code [] (permutation->indeces permutation elements)))
 
 (defn lehmer-code->base-10
   "Converts lehmer-code to base 10."
   [lehmer-code]
-  {:pre [(s/valid? :lehmer.specs/lehmer-code lehmer-code)]
-   :post [(s/valid? :lehmer.specs/natural-integer %)]}
+  {:pre [(s/valid? ::specs/lehmer-code lehmer-code)]
+   :post [(s/valid? ::specs/natural-integer %)]}
   (reduce + 1 (map-indexed (fn [idx n]
                              (* (factorial (- (count lehmer-code) idx 1)) n))
                            lehmer-code)))
