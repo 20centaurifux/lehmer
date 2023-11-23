@@ -2,6 +2,12 @@
 
 *lehmer* is Lehmer code implementation written in Clojure. You can use it to encode each possible permutation of a sequence of *n* numbers.
 
+## Installation
+
+The library can be installed from Clojars using Leiningen:
+
+[![Clojars Project](https://img.shields.io/clojars/v/de.dixieflatline/lehmer.svg?include_prereleases)](https://clojars.org/de.dixieflatline/lehmer)
+
 ## Quick overview
 
 ```

@@ -1,4 +1,4 @@
-(defproject lehmer "0.1.0-SNAPSHOT"
+(defproject de.dixieflatline/lehmer "0.1.0-SNAPSHOT"
   :description "Encode permutations to numbers and vice versa."
   :url "https://github.com/20centaurifux/lehmer"
   :license {:name "AGPLv3"
