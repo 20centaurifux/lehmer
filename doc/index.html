@@ -2865,8 +2865,8 @@ net.brehaut.ClojureTools = (function (SH) {
     build_tree: build_tree
   };
 })(SyntaxHighlighter);
-</script><title>lehmer -- Marginalia</title></head><body><table><tr><td class="docs"><div class="header"><h1 class="project-name"><a href="https://github.com/20centaurifux/lehmer">lehmer</a></h1><h2 class="project-version">0.1.0-SNAPSHOT</h2><br /><p>Encode permutations to numbers and vice versa.</p>
-</div><div class="dependencies"><h3>dependencies</h3><table><tr><td class="dep-name">org.clojure/clojure</td><td class="dotted"><hr /></td><td class="dep-version">1.11.1</td></tr><tr><td class="dep-name">org.clojure/test.check</td><td class="dotted"><hr /></td><td class="dep-version">1.1.1</td></tr></table></div></td><td class="codes" style="text-align: center; vertical-align: middle;color: #666;padding-right:20px"><br /><br /><br />(this space intentionally left almost blank)</td></tr><tr><td class="docs"><div class="toc"><a name="toc"><h3>namespaces</h3></a><ul><li><a href="#lehmer.core">lehmer.core</a></li><li><a href="#lehmer.specs">lehmer.specs</a></li></ul></div></td><td class="codes">&nbsp;</td></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#lehmer.core" name="lehmer.core"><h1 class="project-name">lehmer.core</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
+</script><title>de.dixieflatline/lehmer -- Marginalia</title></head><body><table><tr><td class="docs"><div class="header"><h1 class="project-name"><a href="https://github.com/20centaurifux/lehmer">de.dixieflatline/lehmer</a></h1><h2 class="project-version">0.1.0-SNAPSHOT</h2><br /><p>Encode permutations to numbers and vice versa.</p>
+</div><div class="dependencies"><h3>dependencies</h3><table><tr><td class="dep-name">org.clojure/clojure</td><td class="dotted"><hr /></td><td class="dep-version">1.11.1</td></tr><tr><td class="dep-name">org.clojure/test.check</td><td class="dotted"><hr /></td><td class="dep-version">1.1.1</td></tr></table></div></td><td class="codes" style="text-align: center; vertical-align: middle;color: #666;padding-right:20px"><br /><br /><br />(this space intentionally left almost blank)</td></tr><tr><td class="docs"><div class="toc"><a name="toc"><h3>namespaces</h3></a><ul><li><a href="#lehmer.core">lehmer.core</a></li></ul></div></td><td class="codes">&nbsp;</td></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#lehmer.core" name="lehmer.core"><h1 class="project-name">lehmer.core</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(ns lehmer.core
   (:require [clojure.spec.alpha :as s]
             [lehmer.specs :as specs]))</pre></td></tr><tr><td class="docs">
@@ -2886,13 +2886,12 @@ net.brehaut.ClojureTools = (function (SH) {
                                  (concat l xs)))))))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defn- nthx
   [coll indeces]
-  (map #(nth coll %) indeces))</pre></td></tr><tr><td class="docs">
+  (mapv #(nth coll %) indeces))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defn- nth-elements
   [n elements]
   (-&gt;&gt; (elements-&gt;indeces elements)
        (permutate-indeces (dec n))
-       (nthx elements)
-       (into (empty elements))))</pre></td></tr><tr><td class="docs"><p>Returns n-th permutation of elements or nil if n is greater than number of
+       (nthx elements)))</pre></td></tr><tr><td class="docs"><p>Returns n-th permutation of elements or nil if n is greater than number of
    permutations. elements must be a distinct list, vector or string.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn nth-permutation
   [n elements]
@@ -2903,7 +2902,8 @@ net.brehaut.ClojureTools = (function (SH) {
                    (= (type elements) (type %))))]}
   (when (&lt;= n (factorial (count elements)))
     (cond-&gt;&gt; (nth-elements n elements)
-      (string? elements) (apply str))))</pre></td></tr><tr><td class="docs">
+      (string? elements) (apply str)
+      (list? elements) (apply list))))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defn- permutation-&gt;indeces
   [permutation elements]
   (let [m (zipmap elements
@@ -2929,32 +2929,7 @@ net.brehaut.ClojureTools = (function (SH) {
    :post [(s/valid? ::specs/natural-integer %)]}
   (reduce + 1 (map-indexed (fn [idx n]
                              (* (factorial (- (count lehmer-code) idx 1)) n))
-                           lehmer-code)))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#lehmer.specs" name="lehmer.specs"><h1 class="project-name">lehmer.specs</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(ns lehmer.specs
-  (:require [clojure.spec.alpha :as s]
-            [clojure.test.check.generators :as gen]))</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(s/def ::index pos-int?)</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(s/def ::element (s/or :integer int?
-                       :double double?
-                       :boolean boolean?
-                       :character char?))</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(def ^:private distinct-gen-opts {:min-elements 1})</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(s/def ::elements-string (s/with-gen (s/and string?
-                                            not-empty
-                                            #(apply distinct? %))
-                           #(gen/fmap (partial apply str)
-                                      (gen/list-distinct gen/char-alpha distinct-gen-opts))))</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(def ^:private element-generator (s/gen :lehmer.specs/element))</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(s/def ::elements-coll (s/with-gen (s/and (s/coll-of ::element
-                                                     :distinct true
-                                                     :kind #(or (vector? %) (list? %)))
-                                          not-empty)
-                         #(gen/one-of [(gen/list-distinct element-generator distinct-gen-opts)
-                                       (gen/vector-distinct element-generator distinct-gen-opts)])))</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(s/def ::elements (s/or :string ::elements-string
-                        :coll ::elements-coll))</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(s/def ::lehmer-code (s/coll-of nat-int?))</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(s/def ::natural-integer (s/and integer? #(&gt;= % 0))) ; clojure.core/nat-int? returns false for bigints</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr></table><div class="footer">Generated by <a href="https://github.com/gdeer81/marginalia">Marginalia</a>.&nbsp;&nbsp;Syntax highlighting provided by Alex Gorbatchev's <a href="http://alexgorbatchev.com/SyntaxHighlighter/">SyntaxHighlighter</a><div id="floating-toc"><ul><li class="floating-toc-li" id="floating-toc_lehmer.core">lehmer.core</li><li class="floating-toc-li" id="floating-toc_lehmer.specs">lehmer.specs</li></ul></div></div><script type="text/javascript">SyntaxHighlighter.defaults['gutter'] = false;
+                           lehmer-code)))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr></table><div class="footer">Generated by <a href="https://github.com/gdeer81/marginalia">Marginalia</a>.&nbsp;&nbsp;Syntax highlighting provided by Alex Gorbatchev's <a href="http://alexgorbatchev.com/SyntaxHighlighter/">SyntaxHighlighter</a><div id="floating-toc"><ul><li class="floating-toc-li" id="floating-toc_lehmer.core">lehmer.core</li></ul></div></div><script type="text/javascript">SyntaxHighlighter.defaults['gutter'] = false;
 SyntaxHighlighter.all();
 
 // hackity hack

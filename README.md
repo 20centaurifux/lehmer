@@ -16,7 +16,7 @@ The library can be installed from Clojars using Leiningen:
 ;;; Use nth-permutation to compute permutations.
 ;;; lehmer supports distinct lists, vectors and strings.
 (lehmer/nth-permutation 5 "abc")
-=> "bac"
+=> "cab"
 
 (lehmer/nth-permutation 5 [\a \b \c])
 => [\c \a \b]

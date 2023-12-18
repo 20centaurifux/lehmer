@@ -8,4 +8,5 @@
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}
              :test {:dependencies [[org.clojure/core.match "1.0.1"]]}}
-  :plugins [[lein-marginalia "0.9.1"]])
+  :plugins [[lein-marginalia "0.9.1"]
+            [dev.weavejester/lein-cljfmt "0.12.0"]])

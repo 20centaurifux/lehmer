@@ -21,14 +21,13 @@
 
 (defn- nthx
   [coll indeces]
-  (map #(nth coll %) indeces))
+  (mapv #(nth coll %) indeces))
 
 (defn- nth-elements
   [n elements]
   (->> (elements->indeces elements)
        (permutate-indeces (dec n))
-       (nthx elements)
-       (into (empty elements))))
+       (nthx elements)))
 
 (defn nth-permutation
   "Returns n-th permutation of elements or nil if n is greater than number of
@@ -41,7 +40,8 @@
                    (= (type elements) (type %))))]}
   (when (<= n (factorial (count elements)))
     (cond->> (nth-elements n elements)
-      (string? elements) (apply str))))
+      (string? elements) (apply str)
+      (list? elements) (apply list))))
 
 (defn- permutation->indeces
   [permutation elements]
